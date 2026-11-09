@@ -1,0 +1,38 @@
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Java / Maven
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+.settings/
+.project
+.classpath
+
+# Logs
+*.log
+logs/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Temporary files
+*.tmp
+*.swp
+*.bak
+
+# Build output
+build/
+out/

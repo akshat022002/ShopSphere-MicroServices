@@ -1,0 +1,40 @@
+package com.akshat.catalog.product.dto;
+
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.math.BigDecimal;
+
+public record ProductCreateRequest(
+
+        @NotBlank(message = "Product name is required")
+        @Size(max = 150,message ="Product name must be under 150 characters" )
+        String name,
+
+        @NotBlank(message = "Product description is required")
+        @Size(max=2000,message = "Product description must be under 2000 characters")
+        String description,
+
+        @NotNull(message = "Price is required")
+        @DecimalMin(value = "0.01",message = "Price must be greater than 0")
+        BigDecimal price,
+
+        @NotBlank(message = "Sku is required")
+        @Size(max = 50, message = "Sku must be under 50 characters")
+        String sku,
+
+        @NotNull(message = "Category ID is required")
+        Long categoryId,
+
+        @NotNull(message = "Subcategory ID is required")
+        Long subcategoryId
+
+//        @NotNull(message = "Stock quantity is required")
+//        @Min(value = 0,message = "Stock quantity cannot be negative")
+//        Integer stockQuantity
+
+) {
+
+}

@@ -1,0 +1,121 @@
+If we want timeouts to be dynamic for each services , then
+
+# Application.yml #
+
+services:
+  catalog:
+    connection-request-timeout: 2
+    response-timeout: 2
+  cart:
+    connection-request-timeout: 2
+    response-timeout: 2
+  coupon:
+    connection-request-timeout: 2
+    response-timeout: 2
+  inventory:
+    connection-request-timeout: 2
+    response-timeout: 3
+
+
+# RestClientConfig #
+
+
+package com.akshat.order.common.config;
+
+import org.apache.hc.client5.http.config.RequestConfig;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.web.client.RestClient;
+
+import java.util.concurrent.TimeUnit;
+
+@Configuration
+public class RestClientConfig {
+
+    @Value("${services.catalog.connection-request-timeout}")
+    private long catalogConnectionTimeout;
+
+    @Value("${services.catalog.response-timeout}")
+    private long catalogResponseTimeout;
+
+    @Value("${services.cart.connection-request-timeout}")
+    private long cartConnectionTimeout;
+
+    @Value("${services.cart.response-timeout}")
+    private long cartResponseTimeout;
+
+    @Value("${services.coupon.connection-request-timeout}")
+    private long couponConnectionTimeout;
+
+    @Value("${services.coupon.response-timeout}")
+    private long couponResponseTimeout;
+
+    @Value("${services.inventory.connection-request-timeout}")
+    private long inventoryConnectionTimeout;
+
+    @Value("${services.inventory.response-timeout}")
+    private long inventoryResponseTimeout;
+
+    @Bean
+    public RestClient catalogRestClient() {
+        return createRestClient(
+                "http://localhost:8081",
+                catalogConnectionTimeout,
+                catalogResponseTimeout
+        );
+    }
+
+    @Bean
+    public RestClient cartRestClient() {
+        return createRestClient(
+                "http://localhost:8083",
+                cartConnectionTimeout,
+                cartResponseTimeout
+        );
+    }
+
+    @Bean
+    public RestClient couponRestClient() {
+        return createRestClient(
+                "http://localhost:8086",
+                couponConnectionTimeout,
+                couponResponseTimeout
+        );
+    }
+
+    @Bean
+    public RestClient inventoryRestClient() {
+        return createRestClient(
+                "http://localhost:8082",
+                inventoryConnectionTimeout,
+                inventoryResponseTimeout
+        );
+    }
+
+    private RestClient createRestClient(
+            String url,
+            long connectionRequestTimeout,
+            long responseTimeout) {
+
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectionRequestTimeout(
+                        connectionRequestTimeout, TimeUnit.SECONDS)
+                .setResponseTimeout(responseTimeout, TimeUnit.SECONDS)
+                .build();
+
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setDefaultRequestConfig(requestConfig)
+                .build();
+
+        return RestClient.builder()
+                .baseUrl(url)
+                .requestFactory(
+                        new HttpComponentsClientHttpRequestFactory(httpClient)
+                )
+                .build();
+    }
+}
