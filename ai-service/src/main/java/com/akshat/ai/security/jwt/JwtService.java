@@ -51,8 +51,7 @@ public class JwtService {
 
     public boolean isTokenValid(String token) {
         try {
-            extractClaim(token, Claims::getExpiration);
-            return true;
+            return "ACCESS".equals(extractClaim(token, c -> c.get("type", String.class)));
         } catch (Exception e) {
             return false;
         }
